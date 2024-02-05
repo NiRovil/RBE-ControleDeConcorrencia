@@ -2,4 +2,5 @@
 /lib
 /lib64
 /include
+db.env
 pyvenv.cfg
