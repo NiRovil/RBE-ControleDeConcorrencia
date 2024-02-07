@@ -4,3 +4,5 @@
 /include
 db.env
 pyvenv.cfg
+Pipfile
+Pipfile.lock
