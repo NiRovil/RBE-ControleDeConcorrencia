@@ -19,7 +19,7 @@ class Transacao(Base):
     id = Column(Integer, primary_key=True, index=True)
     valor = Column(Integer)
     tipo = Column(String(1))
-    descricao = Column(String)
+    descricao = Column(String(10))
     time_created = Column(DateTime(timezone=True), server_default=func.now())
     cliente_id = Column(Integer, ForeignKey('cliente.id'))
     cliente = relationship('Cliente')

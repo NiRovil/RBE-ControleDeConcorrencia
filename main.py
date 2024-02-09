@@ -5,6 +5,8 @@ from fastapi_sqlalchemy import DBSessionMiddleware, db
 from schema import Transacao as SchemaTransacao, Cliente as SchemaCliente
 from models import Transacao as ModelTransacao, Cliente as ModelCliente
 
+from datetime import datetime
+
 import os
 from dotenv import load_dotenv
 
@@ -31,7 +33,7 @@ async def update_transacao(cliente_id: int, transacao: SchemaTransacao):
         raise HTTPException(status_code=404, detail='Cliente not found!')
 
     # faz o update do saldo do cliente
-    db_cliente.update({ModelCliente.saldo: ModelCliente.saldo + transacao.valor}, synchronize_session=False)
+    db_cliente.saldo += transacao.valor
 
     # registra a transacao
     db_transacao = ModelTransacao(valor=transacao.valor, tipo=transacao.tipo, descricao=transacao.descricao, cliente_id=cliente_id)
@@ -42,7 +44,20 @@ async def update_transacao(cliente_id: int, transacao: SchemaTransacao):
 
 # endpoint para busca de extrato
 @app.get("/clientes/{cliente_id}/extrato")
-async def get_transacao(cliente_id: int):
-    # com base em ORM faz a busca do extrato do cliente, com base em seu ID
-    transacao = db.session.query(ModelTransacao).get(cliente_id)
-    return transacao
+async def get_extrato(cliente_id: int):
+    
+    # busca as informacoes do cliente em questao
+    cliente = db.session.query(ModelCliente).filter(ModelCliente.id == cliente_id).first()
+    transacoes = db.session.query(ModelTransacao).filter(ModelTransacao.cliente_id == cliente_id).all()
+
+    # cria uma lista com todos os lancamentos feitos pelo cliente
+    transacao = [{"valor": item.valor, "tipo": item.tipo, "descricao": item.descricao, "realizada_em": item.time_created} for item in transacoes]
+    
+    return {
+        "saldo": {
+            "total": cliente.saldo,
+            "data_extrato": datetime.now(),
+            "limite": cliente.limite
+        },
+        "ultimas_transacoes": transacao
+}
