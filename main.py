@@ -24,7 +24,7 @@ def read_root():
 async def update_transacao(cliente_id: int, transacao: SchemaTransacao):
 
     # armazena o cliente
-    db_cliente = db.session.query(ModelCliente).where(ModelCliente.id == cliente_id)
+    db_cliente = db.session.query(ModelCliente).filter(ModelCliente.id == cliente_id).first()
     
     # se o cliente nao existir retorna um status 404
     if db_cliente is None:
@@ -32,9 +32,6 @@ async def update_transacao(cliente_id: int, transacao: SchemaTransacao):
 
     # faz o update do saldo do cliente
     db_cliente.update({ModelCliente.saldo: ModelCliente.saldo + transacao.valor}, synchronize_session=False)
-
-    limite = db_cliente.get('limite')
-    saldo = db_cliente.get('saldo')
 
     # registra a transacao
     db_transacao = ModelTransacao(valor=transacao.valor, tipo=transacao.tipo, descricao=transacao.descricao, cliente_id=cliente_id)

@@ -7,7 +7,7 @@ class Cliente(BaseModel):
 
     class Config:
         orm_mode = True
-        
+
 class Transacao(BaseModel):
     valor: int
     tipo: str
