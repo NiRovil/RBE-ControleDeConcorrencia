@@ -1,3 +1,5 @@
+import uvicorn
+
 from fastapi import FastAPI, HTTPException
 from fastapi_sqlalchemy import DBSessionMiddleware, db
 
@@ -80,3 +82,6 @@ async def get_extrato(cliente_id: int):
         },
         "ultimas_transacoes": transacao
 }
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", reload=True)

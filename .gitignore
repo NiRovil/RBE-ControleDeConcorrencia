@@ -2,6 +2,8 @@
 /lib
 /lib64
 /include
+/__pycache__
+/alembic
 db.env
 pyvenv.cfg
 Pipfile

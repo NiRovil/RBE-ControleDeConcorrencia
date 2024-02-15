@@ -8,7 +8,7 @@ Base = declarative_base()
 
 # define a tabela de clientes
 class Cliente(Base):
-    __tablename__ = 'cliente'
+    __tablename__ = 'clientes'
     id = Column(Integer, primary_key=True, index=True)
     limite = Column(Integer)
     saldo = Column(Integer)
