@@ -33,14 +33,29 @@ async def update_transacao(cliente_id: int, transacao: SchemaTransacao):
         raise HTTPException(status_code=404, detail='Cliente not found!')
 
     # faz o update do saldo do cliente
-    db_cliente.saldo += transacao.valor
 
-    # registra a transacao
-    db_transacao = ModelTransacao(valor=transacao.valor, tipo=transacao.tipo, descricao=transacao.descricao, cliente_id=cliente_id)
-    db.session.add(db_transacao)
-    db.session.commit()
+    novo_saldo = db_cliente.saldo
 
-    return db_cliente
+    if transacao.tipo == 'c':
+        novo_saldo -= transacao.valor
+
+    elif transacao.tipo == 'd':
+        novo_saldo += transacao.valor
+
+    else:
+        return db_cliente
+
+    if novo_saldo > -db_cliente.limite :
+        db_cliente.saldo = novo_saldo
+
+        # registra a transacao
+        db_transacao = ModelTransacao(valor=transacao.valor, tipo=transacao.tipo, descricao=transacao.descricao, cliente_id=cliente_id)
+        db.session.add(db_transacao)
+        db.session.commit()
+
+        return db_cliente
+
+    raise HTTPException(status_code=422, detail='Limit exceeded')
 
 # endpoint para busca de extrato
 @app.get("/clientes/{cliente_id}/extrato")
@@ -48,6 +63,10 @@ async def get_extrato(cliente_id: int):
     
     # busca as informacoes do cliente em questao
     cliente = db.session.query(ModelCliente).filter(ModelCliente.id == cliente_id).first()
+
+    if cliente is None:
+        raise HTTPException(status_code=404, detail='Client not found!')
+    
     transacoes = db.session.query(ModelTransacao).filter(ModelTransacao.cliente_id == cliente_id).all()
 
     # cria uma lista com todos os lancamentos feitos pelo cliente
