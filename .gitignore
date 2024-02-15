@@ -5,6 +5,7 @@
 /app/__pycache__
 /app/db/__pycache__
 /alembic
+alembic.ini
 db.env
 pyvenv.cfg
 Pipfile
