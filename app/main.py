@@ -4,8 +4,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi_sqlalchemy import DBSessionMiddleware, db
 
 # importa o mapeamento e o modelo de dados
-from schema import Transacao as SchemaTransacao, Cliente as SchemaCliente
-from models import Transacao as ModelTransacao, Cliente as ModelCliente
+from db.schema import Transacao as SchemaTransacao, Cliente as SchemaCliente
+from db.models import Transacao as ModelTransacao, Cliente as ModelCliente
 
 from datetime import datetime
 
