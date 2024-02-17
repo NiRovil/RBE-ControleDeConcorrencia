@@ -72,7 +72,7 @@ async def get_extrato(cliente_id: int):
     transacoes = db.session.query(ModelTransacao).filter(ModelTransacao.cliente_id == cliente_id).all()
 
     # cria uma lista com todos os lancamentos feitos pelo cliente
-    transacao = [{"valor": item.valor, "tipo": item.tipo, "descricao": item.descricao, "realizada_em": item.time_created} for item in transacoes]
+    transacao = [{"valor": item.valor, "tipo": item.tipo, "descricao": item.descricao, "realizada_em": item.created_at} for item in transacoes]
     
     return {
         "saldo": {

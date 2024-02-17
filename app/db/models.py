@@ -20,6 +20,6 @@ class Transacao(Base):
     valor = Column(Integer)
     tipo = Column(String(1))
     descricao = Column(String(10))
-    time_created = Column(DateTime(timezone=True), server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
     cliente_id = Column(Integer, ForeignKey('clientes.id'))
     cliente = relationship('Cliente')
